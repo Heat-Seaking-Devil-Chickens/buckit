@@ -4,17 +4,9 @@ const db = require('../models/buckitModels.js');
 
 const apiController = {};
 
-/*
-instead of having the middleware function in controller send data back,
-we need to store the relevant data in our res.locals, and pass it 
-down the middleware chain by invoking next(). The final middleware in the router
-is then responsible for sending the data back to the front-end 
-*/
-
 apiController.createUser = (req, res, next) => {
-  const { userId, username, password } = req.body; 
+  const { userId, username, password } = req.body;
 
-  // SELECT buckits.*, users.username as username FROM buckits LEFT OUTER JOIN users ON users.user_id = buckits.user_id
   const getUser = `SELECT * FROM users WHERE username='${username}';`;
 
   db.query(getUser)
@@ -49,45 +41,24 @@ apiController.createUser = (req, res, next) => {
 // We would essentially want one buckit_list table per user
   // This requires us to join all entries in buckit_list table with the username in users db with req.body.username
 
-  //dependent on user login
 apiController.getBuckitList = (req, res, next) => {
   const { username } = req.params;
-  console.log('request params*******line55', req.params);
+
   const getUserId = `SELECT * FROM users WHERE username='${username}';`;
-  
-  const getUserBuckits = `SELECT buckits.*, users.username as username FROM buckits LEFT OUTER JOIN users ON users.user_id = buckits.user_id WHERE users.username = '${username}'`
-  
-  db.query(getUserBuckits)
-    .then(data => {
-      res.locals.buckits = data.rows;
-      return next();
-    })
-    .catch(err => {
-      console.log(err);
-      return next(err);
-    })
 
-  
-
-  /*
-  this is the old query that the previous group used.  we refactored it above^
   db.query(getUserId)
     .then(data => {
-      console.log('DATA******** line 59', data.rows);
       const userIdData = [...data.rows];
-      const userId = userIdData[0].user_id;
-      console.log('user_id********', userId);
+      const userId = userIdData[0]['user_id'];
       return userId;
     })
-    .then(user_id => {
-      const getBuckits = `SELECT * FROM buckits WHERE user_id='${user_id}';`;
+    .then(userId => {
+      const getBuckits = `SELECT * FROM buckits WHERE user_id='${userId}';`;
 
       db.query(getBuckits)
         .then(data => {
           const buckitsData = [...data.rows];
-          console.log('getBuckits data: ', buckitsData);
-          res.locals.buckits = buckitsData;
-          // return next();
+          // console.log('getBuckits data: ', buckitsData);
           return res.status(200).json(buckitsData);
         })
         .catch(err => {
@@ -99,26 +70,21 @@ apiController.getBuckitList = (req, res, next) => {
       return next(err);
     });
   });
-  */
 };
 
 
-//works
 apiController.createBuckit = (req, res, next) => {
   const buckItId = uuidv4();
-  console.log('buckit received')
-  console.log('requestbody*********',req.body)
-  const { title, description, url, rating, user_id } = req.body;
-// this query might need to be re-written
+
+  const { title, description, url, rating, userId } = req.body;
+
   const addBuckit =  `INSERT INTO buckits (buckit_id, title, description, url, rating, user_id) \
-    VALUES ('${buckItId}', '${title}', '${description}', '${url}', '${rating}', '${user_id}');`;
+    VALUES ('${buckItId}', '${title}', '${description}', '${url}', '${rating}', '${userId}');`;
 
   db.query(addBuckit)
     .then(data => {
-      console.log('newBuckit data: ', data);
-      console.log(req.body);
-      res.locals.body = req.body;
-      return next(); 
+      // console.log('newBuckit data: ', datda);
+      return res.status(200).json(data); 
     })
     .catch((err) => {
       console.log('addBuckit error: ', err);
