@@ -35,6 +35,10 @@
 }
 
 .dashboard{
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
   height: 97%;
   width: 99%;
   background-color:#1e2833;
@@ -51,6 +55,7 @@ hr.solid {
 }
 
 .separator {
+  flex: 1;
   margin-top: 80px;
   margin-left: 10px;
   width: 100%;
@@ -65,6 +70,7 @@ hr.solid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   background: rgb(255, 255, 255);
+  overflow: auto;
   }
 
 
@@ -77,6 +83,11 @@ hr.solid {
     margin: 2px;
   }
 }
+
+.wrapper {
+  display: flex;
+}
+
 // X-Small devices (portrait phones, less than 576px)
 // No media query for `xs` since this is the default in Bootstrap
 
