@@ -102,8 +102,8 @@ const Dashboard = (props) => {
 
     return (
         //Bootstrap(?) Navbar
-      <Container className = "bigger-wrapper">
-        <Container fluid className="dashboard border rounded border-dark">
+      <Container className = "wrapper">
+        <Container fluid className="dashboard border rounded border-dark ">
             <Navbar collapseOnSelect className="fixed-top" bg="dark" variant="dark">
                 <Container>
                     <Navbar.Brand href="/home">Buckit</Navbar.Brand>
